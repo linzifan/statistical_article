@@ -1,6 +1,7 @@
-# statistical-article
+### Statistical Articles
 
-I'll try to post some articles with interesting statistical/ probability problems here.
+I'll try to post some articles related to statistical topics.
+Let's start with some interesting probability problems.
 
 - [Secretary Problem](http://linzifan.github.io/statistical-article/secretary)
 - To be continued...

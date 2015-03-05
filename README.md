@@ -10,4 +10,5 @@ Let's start with some interesting probability problems.
 - [Monty Hall Problem](http://linzifan.github.io/statistical_article/Monty_Hall)
 - [Coupon Collector's Problem](http://linzifan.github.io/statistical_article/coupon)
 - [Boy or Girl Paradox](http://linzifan.github.io/statistical_article/BoyGirl)
+- [Difference Payoff](http://linzifan.github.io/statistical_article/payoff)
 - To be continued...

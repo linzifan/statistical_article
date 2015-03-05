@@ -41,7 +41,10 @@ ET <- rep(0, 100)
 for (i in 1:100){
   ET[i] <- ceiling(n[i] * sum(rep(1, n[i]) / (1:n[i])))
 }
-print(data.frame(n, ET), row.names = FALSE)
+result <- data.frame(n, ET)
+result <- result[order(-n),]
+barplot(result$ET, names.arg = order(-n), ylim = c(1, 100), horiz = TRUE, 
+        xlab = "E(T)", ylab = "n", col="light blue", border = "dark blue")
 ```
 
 

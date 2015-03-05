@@ -1,0 +1,55 @@
+---
+title: "Difference Payoff"
+author: "Zifan Lin"
+date: "March 5, 2015"
+output: html_document
+---
+
+This is a brain teaser.
+
+### Problem
+
+You have 100 stones and ten buckets. After you place the stones in the buckets, two buckets will be chosen at random. You will then be paid a number of dollars equal to the difference in stones between the two buckets.
+
+1. How do you arrange the stones to maximize your expected winnings?
+
+2. If you want to guarantee you will win at least something (no two buckets hold the same number of stones), how can you maximize your winnings? And how can you maximize your guaranteed amount (the smallest amount you can win)?
+
+
+### Solution
+1. Let A, B, ..., J represent the number of stones in the buckets. Suppose they are ordered (A >= B >= C >= ... >= J). There are 45 possible outcomes $10 \choose 2$: A-B, A-C, ..., A-J, B-C, B-D, ..., B-J, ..., I-J. The expected winnings is (9A+7B+5C+3D+E-F-3G-5H-7I-9J)/45. The best way to distribute the stones among those ten buckets is clearly to put all the stones in A. The expected winnings are 20.
+
+2. From the previous question, the strategy to maximize the expected winnings is to put as many as stones in the first bucket. In order to at least win something, we need to put different numbers of stones in the rest nine buckets. The total of these nine buckets are as few as possible; that is 0, 1, 2, 3, 4, 5, 6, 7, 8. Then I have 64 stones in bucket A. The expected winnings are (9 * 64 + 7 * 8 + 5 * 7 + 3 * 6 + 1 * 5 - 1 * 4 - 3 * 3 - 5 * 2 - 7 * 1 - 9 * 0) / 45 = 14.67.
+The guaranteed amount above is 1. If the guaranteed amout is 2, the distribution will be (28, 16, 14, 12, 10, 8, 6, 4, 2, 0). The expected winnings are (9 * 28 + 7 * 16 + 5 * 14 + 3 * 12 + 1 * 10 - 1 * 8 - 3 * 6 - 5 * 4 - 7 * 2 - 9 * 0) / 45 = 9.33.
+The guaranteed amount can not be 3 or above, because the total of nine fewer buckets will be over 100.
+
+
+### Simulation
+```{r}
+distribution_1 <- c(100, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+distribution_2 <- c(64, 8, 7, 6, 5, 4, 3, 2, 1, 0)
+distribution_3 <- c(28, 16, 14, 12, 10, 8, 6, 4, 2, 0)
+
+round <- 10000
+winning_1 <- rep(0, round)
+winning_2 <- rep(0, round)
+winning_3 <- rep(0, round)
+
+for (i in 1:round){
+  ind <- sample(1:10, 2)
+  winning_1[i] <- abs(distribution_1[ind[1]] - distribution_1[ind[2]])
+  winning_2[i] <- abs(distribution_2[ind[1]] - distribution_2[ind[2]])
+  winning_3[i] <- abs(distribution_3[ind[1]] - distribution_3[ind[2]])
+}
+
+mean(winning_1) # expected = 20
+mean(winning_2) # expected = 14.67
+mean(winning_3) # expected = 9.33
+
+
+
+
+```
+
+
+

@@ -17,3 +17,82 @@ Most people initially think not to switch the door, since each door has the same
 
 The probability logic is: At the beginning, you have the probability $\frac{1}{3}$ to choose the right door, and in this case switch will let you loose the prize. You have the probability $\frac{2}{3}$ to choose the door with a goat, and in this case the host must open the door with another goat, if now you switch the door, you will certainly win the car. Overall, if you choose to switch, the probability to win the car is $\frac{2}{3}$.
 
+Another way to understand this is to use *conditional probability*.
+
+Let $C2$ indicate the car is behind door No.2, $X1$ indicate you choose door No.1 at first, $H3$ indicate the host opens door No.3.
+
+$$Pr(C2|X1,H3)=\frac{Pr(C2,X1,H3)}{Pr(X1,H3)}=\frac{Pr(H3|C2,X1)Pr(C2,X1)}{Pr(X1,H3)}$$
+$$=\frac{Pr(H3|C2,X1)Pr(C2|X1)}{Pr(H3|X1)}$$
+$$=\frac{Pr(H3|C2,X1)Pr(C2|X1)}{Pr(H3|C1,X1)Pr(C1|X1)+Pr(H3|C2,X1)Pr(C2|X1)+Pr(H3|C3,X1)Pr(C3|X1)}$$
+$$=\frac{1\times\frac{1}{3}}{\frac{1}{2}\times\frac{1}{3}+1\times\frac{1}{3}+0}=\frac{2}{3}$$
+
+Conclusion: Switch always yield a higher probability to win the car.
+
+
+### Simulation
+```{r}
+round <- 1000
+N <- 3
+doors <- 1:N
+
+win.switch <- rep(0, round)
+win.stay <- rep(0, round)
+
+for (i in 1:round){
+  car <- sample(doors, 1)
+  original <- sample(doors, 1)
+  if (original == car) {
+    open <- sample(doors[-car], 1)
+  } else {
+    open <- doors[-c(car, original)]
+  }
+  final <- doors[-c(open, original)]
+  if (final == car) {
+    win.switch[i] = 1
+  }
+  if (original == car){
+    win.stay[i] = 1
+  }
+}
+
+plot(cumsum(win.switch), type = "l", col = "red", ylab = "Number of wins", xlab = "")
+points(cumsum(win.stay), type = "l", col = "blue")
+legend("topleft", c("wins(switch)", "wins(stay)"), lty = c(1,1), col = c("red", "blue"))
+```
+
+It proves that if we play the game for 100 times, switch strategy will win about two-thirds of games.
+
+
+### Variants - N-door generalization
+
+Suppose there are $N$ doors, and the host will open $p$ losing doors and offer the player the opportunity to switch. Will you switch at this time? The answer is yes, but the advantage depends on $N$ and $p$.
+
+Think this: at first you have the probability $\frac{1}{N}$ to choose the right door - if you switch, you lose. You have the probability $\frac{N-1}{N}$ not to choose the right door. The car must be among those $N-1$ doors. The host opens $p$ doors with goat, so you have the probability of $\frac{1}{N-1-p}$ to choose the right door at this time. The overall probability to get the car using switch strategy is $\frac{N-1}{N}\times\frac{1}{N-1-p}=\frac{N-1}{N(N-1-p)}$.
+
+Even if the host opens a single door, the player is better off switching ($\frac{N-1}{N(N-2)} > \frac{1}{N}$). However, the advantage approaches zero as $N$ is very large.
+
+Here I use simulation to check the probability for switch strategy. Suppose $N=100$ and $p=90$.
+```{r}
+round <- 10000
+win <- rep(0, round)
+N <- 100
+doors <- 1:N
+p <- 90
+for (i in 1:round){
+  car <- sample(doors, 1)
+  original <- sample(doors, 1)
+  if (original == car) {
+    open <- sample(doors[-car], p)
+  } else { 
+    open <- sample(doors[-c(car, original)], p)
+  }
+  final <- sample(doors[-c(open, original)], 1)
+  if (final == car) {
+    win[i] <- 1
+  }
+}
+sum(win)/round
+
+# Theoretical probability
+(100-1)/(100*(100-1-90))
+```

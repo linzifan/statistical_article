@@ -1,0 +1,79 @@
+---
+title: "Coupon Collector's Problem"
+author: "Zifan Lin"
+date: "March 4, 2015"
+output: html_document
+---
+
+### Description
+
+There are $n$ different coupons. Coupons are being collected, equally likely, with replacement. How many coupons do you expect to draw with replacement before having drawn each coupon at least once?
+
+### Hint
+
+Let's brain-storm. Suppose there are 5 different coupons (A, B, C, D, E). In the first draw, you get a coupon, say A. Then the probability to get a new different coupon is $\frac{4}{5}$. You may get a new different coupon in the second draw or not in the second but in the third draw. The number of draws needed to get a new different coupon follows [*Geometric distribution*](http://en.wikipedia.org/wiki/Geometric_distribution) with parameter $p=\frac{4}{5}$. The expectation of this random variable is $\frac{1}{p}=\frac{5}{4}$. Similarly, the time between the second kind of coupon and the third kend of coupon is a *Geometric distribution* with $p=\frac{3}{5}$. Overall, the time to accomplish the goal is a summation of 5 Geometric random variable with parameter $1, \frac{4}{5}, \frac{3}{5}, \frac{2}{5}, \frac{1}{5}$.
+
+This phenomenon is easy to understand. At the beginning, it takes very little time to collect a new coupon($1.25$). On the other hand, it takes a long time to collect the last coupon($5$).
+
+
+### Solution
+
+Let $T$ be the time to collect all $n$ coupons, and let $t_i$ be the time to collect the $i^{th}$ coupon after $i-1$ coupons have been collected. $t_i$ has *Geometric distribution* with $p_i = \frac{n-(i-1)}{n}$.
+
+$$\mathbb{E}(T)=\mathbb{E}(t_1)+\mathbb{E}(t_2) + \dots + \mathbb{E}(t_n) = \frac{1}{p_1} + \frac{1}{p_2} + \dots + \frac{1}{p_n}$$
+$$=\frac{n}{n}+\frac{n}{n-1}+ \dots + \frac{n}{1} = n \left(\frac{1}{1}+\frac{1}{2}+ \dots +\frac{1}{n} \right) = n H_n$$
+$H_n$ is the [harmonic number](http://en.wikipedia.org/wiki/Harmonic_number). Using the asymptotics of the harmonic numbers, 
+
+$$\mathbb{E}(T) = n H_n = n \log n + \gamma n + \frac{1}{2} + o(1)$$
+
+
+$$Var(T) = Var(t_1) + Var(t_2) + \dots + Var(t_n)$$
+$$= \frac{1-p_1}{p_1^2} + \frac{1-p_2}{p_2^2} + \dots + \frac{1-p_n}{p_n^2}$$
+$$= \left(\frac{n^2}{n^2} + \frac{n^2}{(n-1)^2} + \dots + \frac{n^2}{1^2} \right) - \left(\frac{n}{n}+\frac{n}{n-1}+ \dots + \frac{n}{1}\right)$$
+$$= n^2 \left(\frac{1}{1^2} + \frac{1}{2^2} + \dots + \frac{1}{n^2}\right) - n H_n$$
+$$= n^2 \left(\frac{\pi^2}{6}-\frac{1}{n}+\frac{1}{2n^2}\right)- n \log n + \gamma n + \frac{1}{2} + o(1) < \frac{\pi^2}{6} n^2$$
+
+
+
+```{r}
+n <- 1:100
+ET <- rep(0, 100)
+for (i in 1:100){
+  ET[i] <- ceiling(n[i] * sum(rep(1, n[i]) / (1:n[i])))
+}
+print(data.frame(n, ET), row.names = FALSE)
+```
+
+
+
+
+
+### Simulation
+
+```{r}
+round <- 100
+time <- rep(0, round)
+
+for (j in 1:round)
+{
+  coupons <- 1:50
+  box <- 0
+  i <- 1
+  
+  while (TRUE){
+    collect <- sample(coupons, 1)
+    if (! collect %in% box) box <- cbind(box, collect)
+    i <- i + 1
+    if (length(box) == 51) break
+  }
+  
+  time[j] <- i
+}
+
+plot(time)
+abline(h = 225, col = "green", lty = 2, lwd = 2)
+mean(time)
+var(time)
+```
+
+

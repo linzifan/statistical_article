@@ -74,7 +74,28 @@ $$1-\frac{\sum_{l=51}^{100} \frac{100!}{l}}{100!} = 1 - \left(\frac{1}{51} + \do
 ### Simulation
 
 Let's simulate the process of prisoners' startegy.
+```{r}
+round <- 10000
+result <- rep(FALSE, round)
 
+for (r in 1:round){
+  n <- 100
+  winner <- rep(FALSE, n)
+  drawer <- sample(1:n, n, replace = FALSE)
+  for (i in 1:n){
+    k <- 1  # number of drawers opened for each prisoner
+    j <- drawer[i]  # the drawers should be opened
+    while (winner[i] == FALSE & k <= n/2){
+      if (i == j) winner[i] <- TRUE  # the prisoner finds his number
+      else j <- drawer[j]   # otherwise find the other drawer to open with the number which is in the previous drawer
+      k <- k + 1  # number of drawers opened plue one
+    }
+  }
+  if (sum(winner) == n) result[r] <- TRUE  # if success, all winners should be TRUE
+}
+
+mean(result)  # theoretically 0.31183
+```
 
 
 

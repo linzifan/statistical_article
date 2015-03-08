@@ -103,6 +103,27 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <div id="simulation" class="section level3">
 <h3>Simulation</h3>
 <p>Let’s simulate the process of prisoners’ startegy.</p>
+<pre class="r"><code>round &lt;- 10000
+result &lt;- rep(FALSE, round)
+
+for (r in 1:round){
+  n &lt;- 100
+  winner &lt;- rep(FALSE, n)
+  drawer &lt;- sample(1:n, n, replace = FALSE)
+  for (i in 1:n){
+    k &lt;- 1  # number of drawers opened for each prisoner
+    j &lt;- drawer[i]  # the drawers should be opened
+    while (winner[i] == FALSE &amp; k &lt;= n/2){
+      if (i == j) winner[i] &lt;- TRUE  # the prisoner finds his number
+      else j &lt;- drawer[j]   # otherwise find the other drawer to open with the number which is in the previous drawer
+      k &lt;- k + 1  # number of drawers opened plue one
+    }
+  }
+  if (sum(winner) == n) result[r] &lt;- TRUE  # if success, all winners should be TRUE
+}
+
+mean(result)  # theoretically 0.31183</code></pre>
+<pre><code>## [1] 0.311</code></pre>
 </div>
 
 

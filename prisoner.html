@@ -67,6 +67,42 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <p>The key to success is that the prisoners do not have to decide beforehand which drawers they are going to open. Each prisoner can use the information gained from the contents of previously opened drawers to help him decide which drawer to open next. The success of one prisoner is not independent of the success of the other prisoners.</p>
 <p>In order to describe the strategy, not only the prisoners, but also the drawers are numbered from 1 to 100. 1. Each prisoner first opens the drawer with his own number. 2. If this drawer contains his number he is finised with his search and was successful. 3. Otherwise, the drawer contains the number of another prisoner and he next opens the drawer with this number. 4. The prisoner repeats steps 2 and 3 until he finds his own number or has opened 50 drawers. This approach ensures that every time a prisoner opens a drawer he either finds his own number or the number of another prisoner he has not encountered so far.</p>
 </div>
+<div id="example" class="section level3">
+<h3>Example</h3>
+<p>Here is an example using eight prisoners and drawers, whereby each prisoner may open four drawers.</p>
+<p>number of drawers | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |<br />number of prisoner | 7 | 4 | 6 | 8 | 1 | 3 | 5 | 2 |</p>
+<p>The prisoner now act as follows:</p>
+<ul>
+<li>Prisoner 1 first opens drawer 1 and finds number 7. Then he opens drawer 7 and finds number 5. Then he opens drawer 5 where he finds his own number and is successful.</li>
+<li>Prisoner 2 -&gt; 4 -&gt; 8 -&gt; 2</li>
+<li>Prisoner 3 -&gt; 6 -&gt; 3</li>
+<li>Prisoner 4 -&gt; 8 -&gt; 2 -&gt; 4</li>
+<li>Prisoner 5 -&gt; 1 -&gt; 7 -&gt; 5</li>
+<li>Prisoner 6 -&gt; 3 -&gt; 6</li>
+<li>Prisoner 7 -&gt; 5 -&gt; 1 -&gt; 7</li>
+<li>Prisoner 8 -&gt; 2 -&gt; 4 -&gt; 8</li>
+</ul>
+<p>In this case, all prisoners will be successful in finding their numbers.</p>
+<p>However, it is not always the case. See the following example.</p>
+<p>number of drawers | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |<br />number of prisoner | 3 | 1 | 7 | 5 | 8 | 6 | 4 | 2 |</p>
+<p>The prisoner now act as follows:</p>
+<ul>
+<li>Prisoner 1 -&gt; 3 -&gt; 7 -&gt; 4 -&gt; 5 (stop)</li>
+</ul>
+<p>Unfortunately, all prisoners die.</p>
+</div>
+<div id="explanation" class="section level3">
+<h3>Explanation</h3>
+<p>The prison director’s assignment of prisoner numbers to drawers can mathematically be described as a permutation of the number 1 to 100. A sequence of numbers which after repeated application of the permutation returns to the first number is called a <strong>cycle</strong> of the permutation. Every permutation can be decomposed into disjoint cycles, that is cycles which have no common elements.</p>
+<p>The first example has three cycles: (1, 7, 5), (2, 4, 8), (3, 6). The second example has two cycles: (1, 3, 7, 4, 5, 8, 2), (6).</p>
+<p>During the opening the drawers in the above strategy, each prisoner follows a single cycle which always ends with his own number. In order to be successful, the longest cycle of permutation is at most 50 in 100-drawers setting.</p>
+<p>The survival probability is calculated as follows:</p>
+<p>A permutation of the number 1 to 100 can contain at most one cycle of lenght <span class="math">\(l&gt;50\)</span>. There are exactly <span class="math">\({100}\choose{l}\)</span> ways to select the numbers of such a cycle. Within this cycle, the numbers can be arranged in <span class="math">\((l-1)!\)</span> ways since there are <span class="math">\(l\)</span> possibilities to select the starting number of the cycle. The remaining numbers can be arranged in <span class="math">\((100-l)!\)</span> ways. Therefore, the number of permutations of the numbers 1 to 100 with a cycle of length <span class="math">\(l&gt;50\)</span> is equal to <span class="math">\[{{100}\choose{l}} \times (l-1)! \times (100-l)! = \frac{100!}{l}\]</span></p>
+<p>The probability that a uniformly distributed random permutation contains no cycle of length greater than 50 is <span class="math">\[1-\frac{\sum_{l=51}^{100} \frac{100!}{l}}{100!} = 1 - \left(\frac{1}{51} + \dots + \frac{1}{100} \right) \approx 0.31183\]</span></p>
+</div>
+<div id="simulation" class="section level3">
+<h3>Simulation</h3>
+</div>
 
 
 </div>

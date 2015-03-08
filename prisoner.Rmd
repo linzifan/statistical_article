@@ -20,3 +20,61 @@ In order to describe the strategy, not only the prisoners, but also the drawers 
 4. The prisoner repeats steps 2 and 3 until he finds his own number or has opened 50 drawers.
 This approach ensures that every time a prisoner opens a drawer he either finds his own number or the number of another prisoner he has not encountered so far.
 
+
+### Example
+
+Here is an example using eight prisoners and drawers, whereby each prisoner may open four drawers.
+
+| number of drawers | 1  |  2 | 3  |  4 | 5  |  6 | 7  |  8 |
+| number of prisoner  |  7 |  4 | 6  |  8 | 1  |  3 | 5  |  2 |
+
+The prisoner now act as follows:
+
+- Prisoner 1 first opens drawer 1 and finds number 7. Then he opens drawer 7 and finds number 5. Then he opens drawer 5 where he finds his own number and is successful.
+- Prisoner 2 -> 4 -> 8 -> 2
+- Prisoner 3 -> 6 -> 3
+- Prisoner 4 -> 8 -> 2 -> 4
+- Prisoner 5 -> 1 -> 7 -> 5
+- Prisoner 6 -> 3 -> 6
+- Prisoner 7 -> 5 -> 1 -> 7
+- Prisoner 8 -> 2 -> 4 -> 8
+
+In this case, all prisoners will be successful in finding their numbers.
+
+However, it is not always the case. See the following example.
+
+| number of drawers | 1  |  2 | 3  |  4 | 5  |  6 | 7  |  8 |
+| number of prisoner  |  3 |  1 | 7  |  5 | 8  |  6 | 4  |  2 |
+
+The prisoner now act as follows:
+
+- Prisoner 1 -> 3 -> 7 -> 4 -> 5 (stop)
+
+Unfortunately, all prisoners die.
+
+
+### Explanation
+
+The prison director's assignment of prisoner numbers to drawers can mathematically be described as a permutation of the number 1 to 100. A sequence of numbers which after repeated application of the permutation returns to the first number is called a **cycle** of the permutation. Every permutation can be decomposed into disjoint cycles, that is cycles which have no common elements. 
+
+The first example has three cycles: (1, 7, 5), (2, 4, 8), (3, 6).
+The second example has two cycles: (1, 3, 7, 4, 5, 8, 2), (6).
+
+During the opening the drawers in the above strategy, each prisoner follows a single cycle which always ends with his own number. In order to be successful, the longest cycle of permutation is at most 50 in 100-drawers setting.
+
+The survival probability is calculated as follows:
+
+A permutation of the number 1 to 100 can contain at most one cycle of lenght $l>50$. There are exactly ${100}\choose{l}$ ways to select the numbers of such a cycle. Within this cycle, the numbers can be arranged in $(l-1)!$ ways since there are $l$ possibilities to select the starting number of the cycle. The remaining numbers can be arranged in $(100-l)!$ ways. Therefore, the number of permutations of the numbers 1 to 100 with a cycle of length $l>50$ is equal to
+$${{100}\choose{l}} \times (l-1)! \times (100-l)! = \frac{100!}{l}$$
+
+The probability that a uniformly distributed random permutation contains no cycle of length greater than 50 is
+$$1-\frac{\sum_{l=51}^{100} \frac{100!}{l}}{100!} = 1 - \left(\frac{1}{51} + \dots + \frac{1}{100} \right) \approx 0.31183$$
+
+
+### Simulation
+
+
+
+
+
+

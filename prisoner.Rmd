@@ -25,7 +25,8 @@ This approach ensures that every time a prisoner opens a drawer he either finds 
 
 Here is an example using eight prisoners and drawers, whereby each prisoner may open four drawers.
 
-
+| number of drawers | 1  |  2 | 3  |  4 | 5  |  6 | 7  |  8 |
+| number of prisoner  |  7 |  4 | 6  |  8 | 1  |  3 | 5  |  2 |
 
 The prisoner now act as follows:
 
@@ -42,7 +43,8 @@ In this case, all prisoners will be successful in finding their numbers.
 
 However, it is not always the case. See the following example.
 
-
+| number of drawers | 1  |  2 | 3  |  4 | 5  |  6 | 7  |  8 |
+| number of prisoner  |  3 |  1 | 7  |  5 | 8  |  6 | 4  |  2 |
 
 The prisoner now act as follows:
 
@@ -63,7 +65,7 @@ During the opening the drawers in the above strategy, each prisoner follows a si
 The survival probability is calculated as follows:
 
 A permutation of the number 1 to 100 can contain at most one cycle of lenght $l>50$. There are exactly ${100}\choose{l}$ ways to select the numbers of such a cycle. Within this cycle, the numbers can be arranged in $(l-1)!$ ways since there are $l$ possibilities to select the starting number of the cycle. The remaining numbers can be arranged in $(100-l)!$ ways. Therefore, the number of permutations of the numbers 1 to 100 with a cycle of length $l>50$ is equal to
-$${{100}\choose{l}} \times (l-1)! \times (100-l)! = \frac{100!}{l}$$
+$${100\choose{l}} \times (l-1)! \times (100-l)! = \frac{100!}{l}$$
 
 The probability that a uniformly distributed random permutation contains no cycle of length greater than 50 is
 $$1-\frac{\sum_{l=51}^{100} \frac{100!}{l}}{100!} = 1 - \left(\frac{1}{51} + \dots + \frac{1}{100} \right) \approx 0.31183$$

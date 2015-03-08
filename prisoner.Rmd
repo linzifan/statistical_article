@@ -73,6 +73,7 @@ $$1-\frac{\sum_{l=51}^{100} \frac{100!}{l}}{100!} = 1 - \left(\frac{1}{51} + \do
 
 ### Simulation
 
+Let's simulate the process of prisoners' startegy.
 
 
 

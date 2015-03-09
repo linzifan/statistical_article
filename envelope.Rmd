@@ -1,0 +1,42 @@
+---
+title: "Two Envelopes Problem"
+author: "Zifan Lin"
+date: "March 8, 2015"
+output: html_document
+---
+
+The Two Envelopes Problem is a paradox in logic. It is of special interest in decision theory, and for the Bayesian interpretation of probability theory.
+
+### Problem
+**Setup**
+
+You are given two indistinguishable envelopes, each of which contains a positive sum of money. One envelope contains twice as much as the other. You may pick one envelope and keep whatever amount it contains. You pick one envelope at random but before you open it you are given the chance to take the other envelope instead. What is the optimal rational strategy for maximising the amount of money to be gained?
+
+**Switching Argument**
+
+1. I denote by A the amount in my selected envelope.
+2. The probability that A is the smaller amount is 1/2, and that it is the larger amount is also 1/2.
+3. The other envelope may contain either 2A (with probability 1/2) or A/2 (with probability 1/2).
+4. The expected value of the money is the other envelope is 2A * 1 / 2 + A / 2 * 1 / 2 = 5A/4.
+5. It is greater than A, so I gain on average by swapping.
+6. After the switch, I can denote that content by B and reason in exactly the same manner as above.
+7. I will conclude that the most rational thing to do is to swap back again.
+8. To be retional, I will thus end up swapping envelopes indefinitely.
+9. As it seems more rational to open just any envelope than to swap indefinitely, we have a contradiction.
+
+
+### Simple Resolution
+
+It is pointed out that the 'A' in the first part of the formula (2A * 1 / 2) is the expected value, given that envelope A contains less than envelope B, but the 'A' in the second part of the formula (A / 2 * 1 / 2) is the expected value, given that envelope A contains more than envelope B. The flaw in the argument is that same symbol is used with two different meanings in both parts of the same calculation but is assumed to have the same value in both cases.
+
+A correct calculation of the formula would be:
+$$\mathbb{E}(B) = \mathbb{E}(B|A<B)\mathbb{P}(A<B) + \mathbb{E}(B|A>B)\mathbb{P}(A>B)$$
+$$= \mathbb{E}(2A|A<B)\frac{1}{2} + \mathbb{E}(\frac{1}{2}A|A>B)\frac{1}{2}$$
+$$= \mathbb{E}(A|A<B) + \frac{1}{4}\mathbb{E}(A|A>B)$$
+$$= x + \frac{1}{4} * 2x = \frac{3}{2} x$$
+$x$ is the smaller amount in these two envelopes. By the same calculation, it is also the expected value of the amount in Envelope A. They are the same hence there is no reason to prefer one envelope to the other.
+
+Tsikogiannopoulos (2012) presented a different way to do these calculations. Given that the player's envelope contains the amount A, the first game would be played with the amounts (A, 2A) and the second game with the amounts (A/2, A). Only one of them is actually played but we don't know which one, and we don't know the amounts in the two games. If the player wants to compute his/her expected return (profit or loss) in case of exchange, he/she should weigh the return derived from each game by the average amount in the two envelopes in that particular game. So the formula of the expected return in case of exchange is, seen as a proportion of the total amount in the two envelopes, is:
+$$\mathbb{E} = \frac{1}{2} \frac{+A}{\frac{3}{2} A} + \frac{1}{2} \frac{-A/2}{\frac{3}{4} A} = 0$$
+
+This result means that the player has to expect neither profit nor loss by exchanging his/her envelope.

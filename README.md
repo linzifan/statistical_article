@@ -12,4 +12,5 @@ Let's start with some interesting probability problems.
 - [Boy or Girl Paradox](http://linzifan.github.io/statistical_article/BoyGirl)
 - [Difference Payoff](http://linzifan.github.io/statistical_article/payoff)
 - [100 Prisoners Problem](http://linzifan.github.io/statistical_article/prisoner)
+- [Two Envelopes Problem](http://linzifan.github.io/statistical_article/envelope)
 - To be continued...

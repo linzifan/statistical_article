@@ -1,0 +1,51 @@
+---
+title: "Magic Square"
+author: "Zifan Lin"
+date: "March 9, 2015"
+output: html_document
+---
+
+A magic square is an arrangement of distinct integers in a square grid, where the numbers in each row, and in each column, and the numbers in the main and secondary diagonals, all add up to the same number. Normal magic squares of all sizes except $n=2$ can be constructed.
+
+Here I will write functions to construct magic squares of all orders using the following three algorithm. Notice that the magic square of some order is not unique. Here these algorithms could give one solution, but not give all possible solutions.
+
+**odd number $n = 2M + 1$**
+```{r}
+magic_4M <- function(n, echo=FALSE){
+  # n must be the integer divisible by 4
+  if (n %% 4 != 0) warning("To use this method, n must be the integer divisible by 4") 
+  else {temp0 <- diag(nrow = 4, ncol = 4) + diag(nrow = 4, ncol = 4)[, 4:1]
+        temp1 <- temp0
+        m <- n/4
+        if (m > 1){
+          for (i in 2:m){temp1 <- cbind(temp1, temp0)}
+          temp0 <- temp1
+          for (i in 2:m){temp1 <- rbind(temp1, temp0)}
+        }
+        temp2 <- matrix(rep(1, n^2), nrow = n, ncol = n) - temp1 
+        result <- matrix(1:n^2, nrow = n, ncol = n, byrow = T) * temp1 + 
+                  matrix(n^2:1, nrow = n, ncol = n, byrow = T) * temp2
+        Sum <- (n^2 + 1) / 2 * n
+        # check the row sum and column sum
+        if(all(colSums(result) == Sum) & all(rowSums(result) == Sum)) {
+          if(echo){
+            cat("Magic square found at the order of", n, "\n")
+            print(result)
+            cat("Row sum and column sum are both", Sum, "\n")
+          }
+          return(result)
+        }        
+  }
+}
+
+magic.8 <- magic_4M(8, echo=T)
+```
+
+
+**$n = 4M$**
+
+
+
+**$n = 4M + 2$**
+
+

@@ -14,3 +14,7 @@ Let's start with some interesting probability problems.
 - [100 Prisoners Problem](http://linzifan.github.io/statistical_article/prisoner)
 - [Two Envelopes Problem](http://linzifan.github.io/statistical_article/envelope)
 - To be continued...
+
+Let's also play something fun with recreational mathematics.
+
+- [Magic Squares](http://linzifan.github.io/statistical_article/magic)

@@ -9,7 +9,14 @@ A magic square is an arrangement of distinct integers in a square grid, where th
 
 Here I will write functions to construct magic squares of all orders using the following three algorithm. Notice that the magic square of some order is not unique. Here these algorithms could give one solution, but not give all possible solutions.
 
-**odd number $n = 2M + 1$**
+- **odd order $n = 2M + 1$**
+
+
+
+- **doubly even order $n = 4M$**
+
+All numbers are written in order from left to right across each row in turn, starting from the top left corner. Numbers are then either retained in the same place or interchanged with their diametrically opposite numbers in a certain regular pattern. In the situation of order of 4, those numbers on the diagonal and anti-diagonal are retained, while other numbers are interchanged. In the situation of order more than 4 (8, 12, and so on), first divide the grid into several $4 \times 4$ squares, retain the numbers on those diagonals and anti-diagonals, while other numbers are interchanged. Another way to understand how to interchange numbers with their diametrically opposite numbers is that to select numbers from the square where the numbers are written in reverse order to fill in the blanks which are not on the diagonals and anti-diagonals.
+
 ```{r}
 magic_4M <- function(n, echo=FALSE){
   # n must be the integer divisible by 4
@@ -42,10 +49,6 @@ magic.8 <- magic_4M(8, echo=T)
 ```
 
 
-**$n = 4M$**
-
-
-
-**$n = 4M + 2$**
+- **$n = 4M + 2$**
 
 

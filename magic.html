@@ -60,7 +60,11 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 
 <p>A magic square is an arrangement of distinct integers in a square grid, where the numbers in each row, and in each column, and the numbers in the main and secondary diagonals, all add up to the same number. Normal magic squares of all sizes except <span class="math">\(n=2\)</span> can be constructed.</p>
 <p>Here I will write functions to construct magic squares of all orders using the following three algorithm. Notice that the magic square of some order is not unique. Here these algorithms could give one solution, but not give all possible solutions.</p>
-<p><strong>odd number <span class="math">\(n = 2M + 1\)</span></strong></p>
+<ul>
+<li><p><strong>odd order <span class="math">\(n = 2M + 1\)</span></strong></p></li>
+<li><p><strong>doubly even order <span class="math">\(n = 4M\)</span></strong></p></li>
+</ul>
+<p>All numbers are written in order from left to right across each row in turn, starting from the top left corner. Numbers are then either retained in the same place or interchanged with their diametrically opposite numbers in a certain regular pattern. In the situation of order of 4, those numbers on the diagonal and anti-diagonal are retained, while other numbers are interchanged. In the situation of order more than 4 (8, 12, and so on), first divide the grid into several <span class="math">\(4 \times 4\)</span> squares, retain the numbers on those diagonals and anti-diagonals, while other numbers are interchanged. Another way to understand how to interchange numbers with their diametrically opposite numbers is that to select numbers from the square where the numbers are written in reverse order to fill in the blanks which are not on the diagonals and anti-diagonals.</p>
 <pre class="r"><code>magic_4M &lt;- function(n, echo=FALSE){
   # n must be the integer divisible by 4
   if (n %% 4 != 0) warning(&quot;To use this method, n must be the integer divisible by 4&quot;) 
@@ -100,8 +104,9 @@ magic.8 &lt;- magic_4M(8, echo=T)</code></pre>
 ## [7,]   16   50   51   13   12   54   55    9
 ## [8,]   57    7    6   60   61    3    2   64
 ## Row sum and column sum are both 260</code></pre>
-<p><strong><span class="math">\(n = 4M\)</span></strong></p>
-<p><strong><span class="math">\(n = 4M + 2\)</span></strong></p>
+<ul>
+<li><strong><span class="math">\(n = 4M + 2\)</span></strong></li>
+</ul>
 
 
 </div>

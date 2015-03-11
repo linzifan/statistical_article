@@ -65,36 +65,33 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 </ul>
 <p>The method prescribes starting in the central column of the first row <code>i &lt;- 1; j &lt;- (n + 1) / 2</code> with number 1. After that, the fundamental movement for filling the squares is diagonally right and up <code>i &lt;- i - 1; j &lt;- j + 1</code>, one step at a time. If it moves beyond the right boundary, continue from the left side <code>j &lt;- j - n</code>; if it moves beyond the top, continue from the bottom <code>i &lt;- i + n</code>. If a filled square is encountered, one move vertically up one square instead <code>i &lt;- i + 2; j &lt;- j - 1</code>, then continue as before.</p>
 <pre class="r"><code>magic_2Mp1 &lt;- function(n, echo=FALSE){
-  # n must be the odd number
-  if (n %% 2 == 0) warning(&quot;To use this method, n must be the odd number&quot;) 
-  else {result &lt;- matrix(0, nrow = n, ncol = n)       
-        i &lt;- 1
-        j &lt;- (n + 1) / 2
-        result[i,j] &lt;- 1
-        for (k in 2:n^2){
-          i &lt;- i - 1
-          j &lt;- j + 1
-          if (i &lt;= 0) i &lt;- i + n
-          if (j &gt; n) j &lt;- j - n
-          if (result[i, j] &gt; 0) {
-            i &lt;- i + 2
-            j &lt;- j - 1
-            if (i &gt; n) i &lt;- i - n
-            if (j &lt;= 0) j &lt;- j + n
-          }
-          result[i, j] &lt;- k
-        }
-        Sum &lt;- (n^2 + 1) / 2 * n
-        # check the row sum and column sum
-        if(all(colSums(result) == Sum) &amp; all(rowSums(result) == Sum)) {
-          if(echo){
-            cat(&quot;Magic square found at the order of&quot;, n, &quot;\n&quot;)
-            print(result)
-            cat(&quot;Row sum and column sum are both&quot;, Sum, &quot;\n&quot;)
-          }
-          return(result)
-        }        
+  result &lt;- matrix(0, nrow = n, ncol = n)       
+  i &lt;- 1
+  j &lt;- (n + 1) / 2
+  result[i,j] &lt;- 1
+  for (k in 2:n^2){
+    i &lt;- i - 1
+    j &lt;- j + 1
+    if (i &lt;= 0) i &lt;- i + n
+    if (j &gt; n) j &lt;- j - n
+    if (result[i, j] &gt; 0) {
+      i &lt;- i + 2
+      j &lt;- j - 1
+      if (i &gt; n) i &lt;- i - n
+      if (j &lt;= 0) j &lt;- j + n
+    }
+    result[i, j] &lt;- k
   }
+  Sum &lt;- (n^2 + 1) / 2 * n
+  # check the row sum and column sum and diagonal sum
+  if(all(colSums(result) == Sum) &amp; all(rowSums(result) == Sum) &amp; sum(diag(result)) == Sum &amp; sum(diag(result[, n:1])) == Sum) {
+    if(echo){
+      cat(&quot;Magic square found at the order of&quot;, n, &quot;\n&quot;)
+      print(result)
+      cat(&quot;Row sum and column sum and diagonal sum are all&quot;, Sum, &quot;\n&quot;)
+    }
+    return(result)
+  }        
 }
 
 magic.9 &lt;- magic_2Mp1(9, echo=T)</code></pre>
@@ -109,36 +106,33 @@ magic.9 &lt;- magic_2Mp1(9, echo=T)</code></pre>
 ##  [7,]   26   28   39   50   61   72   74    4   15
 ##  [8,]   36   38   49   60   71   73    3   14   25
 ##  [9,]   37   48   59   70   81    2   13   24   35
-## Row sum and column sum are both 369</code></pre>
+## Row sum and column sum and diagonal sum are all 369</code></pre>
 <ul>
 <li><strong>doubly even order <span class="math">\(n = 4M\)</span></strong></li>
 </ul>
 <p>All numbers are written in order from left to right across each row in turn, starting from the top left corner. Numbers are then either retained in the same place or interchanged with their diametrically opposite numbers in a certain regular pattern. In the situation of order of 4, those numbers on the diagonal and anti-diagonal are retained, while other numbers are interchanged. In the situation of order more than 4 (8, 12, and so on), first divide the grid into several <span class="math">\(4 \times 4\)</span> squares, retain the numbers on those diagonals and anti-diagonals, while other numbers are interchanged. Another way to understand how to interchange numbers with their diametrically opposite numbers is that to select numbers from the square where the numbers are written in reverse order to fill in the blanks which are not on the diagonals and anti-diagonals.</p>
 <pre class="r"><code>magic_4M &lt;- function(n, echo=FALSE){
-  # n must be the integer divisible by 4
-  if (n %% 4 != 0) warning(&quot;To use this method, n must be the integer divisible by 4&quot;) 
-  else {temp0 &lt;- diag(nrow = 4, ncol = 4) + diag(nrow = 4, ncol = 4)[, 4:1]
-        temp1 &lt;- temp0
-        m &lt;- n/4
-        if (m &gt; 1){
-          for (i in 2:m){temp1 &lt;- cbind(temp1, temp0)}
-          temp0 &lt;- temp1
-          for (i in 2:m){temp1 &lt;- rbind(temp1, temp0)}
-        }
-        temp2 &lt;- matrix(rep(1, n^2), nrow = n, ncol = n) - temp1 
-        result &lt;- matrix(1:n^2, nrow = n, ncol = n, byrow = T) * temp1 + 
-                  matrix(n^2:1, nrow = n, ncol = n, byrow = T) * temp2
-        Sum &lt;- (n^2 + 1) / 2 * n
-        # check the row sum and column sum
-        if(all(colSums(result) == Sum) &amp; all(rowSums(result) == Sum)) {
-          if(echo){
-            cat(&quot;Magic square found at the order of&quot;, n, &quot;\n&quot;)
-            print(result)
-            cat(&quot;Row sum and column sum are both&quot;, Sum, &quot;\n&quot;)
-          }
-          return(result)
-        }        
+  temp0 &lt;- diag(nrow = 4, ncol = 4) + diag(nrow = 4, ncol = 4)[, 4:1]
+  temp1 &lt;- temp0
+  m &lt;- n/4
+  if (m &gt; 1){
+    for (i in 2:m){temp1 &lt;- cbind(temp1, temp0)}
+    temp0 &lt;- temp1
+    for (i in 2:m){temp1 &lt;- rbind(temp1, temp0)}
   }
+  temp2 &lt;- matrix(rep(1, n^2), nrow = n, ncol = n) - temp1 
+  result &lt;- matrix(1:n^2, nrow = n, ncol = n, byrow = T) * temp1 + 
+    matrix(n^2:1, nrow = n, ncol = n, byrow = T) * temp2
+  Sum &lt;- (n^2 + 1) / 2 * n
+  # check the row sum and column sum and diagonal sum
+  if(all(colSums(result) == Sum) &amp; all(rowSums(result) == Sum) &amp; sum(diag(result)) == Sum &amp; sum(diag(result[, n:1])) == Sum) {
+    if(echo){
+      cat(&quot;Magic square found at the order of&quot;, n, &quot;\n&quot;)
+      print(result)
+      cat(&quot;Row sum and column sum and diagonal sum are all&quot;, Sum, &quot;\n&quot;)
+    }
+    return(result)
+  }        
 }
 
 magic.8 &lt;- magic_4M(8, echo=T)</code></pre>
@@ -152,10 +146,127 @@ magic.8 &lt;- magic_4M(8, echo=T)</code></pre>
 ## [6,]   24   42   43   21   20   46   47   17
 ## [7,]   16   50   51   13   12   54   55    9
 ## [8,]   57    7    6   60   61    3    2   64
-## Row sum and column sum are both 260</code></pre>
+## Row sum and column sum and diagonal sum are all 260</code></pre>
 <ul>
-<li><strong><span class="math">\(n = 4M + 2\)</span></strong></li>
+<li><strong>singly even order <span class="math">\(n = 4M + 2\)</span></strong></li>
 </ul>
+<p>Here I use LUX method. First, give <span class="math">\(2M + 1\)</span> order magic square using odd order method <code>magic_2Mp1(n/2)</code>. Then divide each cell in this magic square into three groups: row <span class="math">\(1\)</span> to row <span class="math">\(m\)</span> are all in group “L”; central cell in row <span class="math">\(m+1\)</span> is in group “U”, the rest in group “L”; central cell in row <span class="math">\(m+2\)</span> is in group “L”, the rest in group “U”; the remaining rows are all in group “X”. Each number in <span class="math">\(2M + 1\)</span> order magic square will multiple <span class="math">\(4\)</span> and minue <span class="math">\(4\)</span>, then generate a <span class="math">\(2 \times 2\)</span> square in corresponding place using the follwing rule:</p>
+<table>
+<col width="5%"></col>
+<col width="5%"></col>
+<col width="5%"></col>
+<col width="5%"></col>
+<col width="5%"></col>
+<col width="5%"></col>
+<col width="5%"></col>
+<col width="5%"></col>
+<col width="5%"></col>
+<col width="5%"></col>
+<col width="5%"></col>
+<tbody>
+<tr class="odd">
+<td align="left"><p>4</p></td>
+<td align="left"></td>
+<td align="left"><p>1</p></td>
+<td align="left"></td>
+<td align="left"><p>1</p></td>
+<td align="left"></td>
+<td align="left"><p>4</p></td>
+<td align="left"></td>
+<td align="left"><p>1</p></td>
+<td align="left"></td>
+<td align="left"><p>4</p></td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left"><p>L</p></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"><p>U</p></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"><p>X</p></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left"><p>2</p></td>
+<td align="left"></td>
+<td align="left"><p>3</p></td>
+<td align="left"></td>
+<td align="left"><p>2</p></td>
+<td align="left"></td>
+<td align="left"><p>3</p></td>
+<td align="left"></td>
+<td align="left"><p>3</p></td>
+<td align="left"></td>
+<td align="left"><p>2</p></td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>magic_4Mp2 &lt;- function(n, echo=FALSE){
+  m &lt;- n %/% 4
+  temp &lt;- magic_2Mp1(2*m+1) * 4 - 4
+  
+  LUX &lt;- matrix(0, nrow = 2*m+1, ncol = 2*m+1)
+  LUX[1:m, ] &lt;- &quot;L&quot;
+  LUX[(m+1), -(m+1)] &lt;- &quot;L&quot;
+  LUX[(m+1), (m+1)] &lt;- &quot;U&quot;
+  LUX[(m+2), -(m+1)] &lt;- &quot;U&quot;
+  LUX[(m+2), (m+1)] &lt;- &quot;L&quot;
+  if (m &gt;= 2) LUX[(m+3):(2*m+1), ] &lt;- &quot;X&quot;
+  
+  result &lt;- matrix(0, nrow = 4*m+2, ncol = 4*m+2)
+  
+  for (i in 1:(2*m+1)){
+    for (j in 1:(2*m+1)){
+      if (LUX[i,j] == &quot;L&quot;) {
+        result[2*i-1, 2*j-1] &lt;- temp[i, j] + 4
+        result[2*i-1, 2*j-1+1] &lt;- temp[i, j] + 1
+        result[2*i-1+1, 2*j-1] &lt;- temp[i, j] + 2
+        result[2*i-1+1, 2*j-1+1] &lt;- temp[i,j] + 3
+      }
+      if (LUX[i,j] == &quot;U&quot;) {
+        result[2*i-1, 2*j-1] &lt;- temp[i, j] + 1
+        result[2*i-1, 2*j-1+1] &lt;- temp[i, j] + 4
+        result[2*i-1+1, 2*j-1] &lt;- temp[i, j] + 2
+        result[2*i-1+1, 2*j-1+1] &lt;- temp[i,j] + 3
+      }
+      if (LUX[i,j] == &quot;X&quot;) {
+        result[2*i-1, 2*j-1] &lt;- temp[i, j] + 1
+        result[2*i-1, 2*j-1+1] &lt;- temp[i, j] + 4
+        result[2*i-1+1, 2*j-1] &lt;- temp[i, j] + 3
+        result[2*i-1+1, 2*j-1+1] &lt;- temp[i,j] + 2
+      }
+    }
+  }
+  Sum &lt;- (n^2 + 1) / 2 * n
+  # check the row sum and column sum and diagonal sum
+  if(all(colSums(result) == Sum) &amp; all(rowSums(result) == Sum) &amp; sum(diag(result)) == Sum &amp; sum(diag(result[, n:1])) == Sum) {
+      if(echo){
+        cat(&quot;Magic square found at the order of&quot;, n, &quot;\n&quot;)
+        print(result)
+        cat(&quot;Row sum and column sum and diagonal sum are all&quot;, Sum, &quot;\n&quot;)
+      }
+      return(result)
+    }        
+}
+
+magic.10 &lt;- magic_4Mp2(10, echo=T)</code></pre>
+<pre><code>## Magic square found at the order of 10 
+##       [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
+##  [1,]   68   65   96   93    4    1   32   29   60    57
+##  [2,]   66   67   94   95    2    3   30   31   58    59
+##  [3,]   92   89   20   17   28   25   56   53   64    61
+##  [4,]   90   91   18   19   26   27   54   55   62    63
+##  [5,]   16   13   24   21   49   52   80   77   88    85
+##  [6,]   14   15   22   23   50   51   78   79   86    87
+##  [7,]   37   40   45   48   76   73   81   84    9    12
+##  [8,]   38   39   46   47   74   75   82   83   10    11
+##  [9,]   41   44   69   72   97  100    5    8   33    36
+## [10,]   43   42   71   70   99   98    7    6   35    34
+## Row sum and column sum and diagonal sum are all 505</code></pre>
 
 
 </div>

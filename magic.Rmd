@@ -15,36 +15,33 @@ The method prescribes starting in the central column of the first row `i <- 1; j
 
 ```{r}
 magic_2Mp1 <- function(n, echo=FALSE){
-  # n must be the odd number
-  if (n %% 2 == 0) warning("To use this method, n must be the odd number") 
-  else {result <- matrix(0, nrow = n, ncol = n)       
-        i <- 1
-        j <- (n + 1) / 2
-        result[i,j] <- 1
-        for (k in 2:n^2){
-          i <- i - 1
-          j <- j + 1
-          if (i <= 0) i <- i + n
-          if (j > n) j <- j - n
-          if (result[i, j] > 0) {
-            i <- i + 2
-            j <- j - 1
-            if (i > n) i <- i - n
-            if (j <= 0) j <- j + n
-          }
-          result[i, j] <- k
-        }
-        Sum <- (n^2 + 1) / 2 * n
-        # check the row sum and column sum
-        if(all(colSums(result) == Sum) & all(rowSums(result) == Sum)) {
-          if(echo){
-            cat("Magic square found at the order of", n, "\n")
-            print(result)
-            cat("Row sum and column sum are both", Sum, "\n")
-          }
-          return(result)
-        }        
+  result <- matrix(0, nrow = n, ncol = n)       
+  i <- 1
+  j <- (n + 1) / 2
+  result[i,j] <- 1
+  for (k in 2:n^2){
+    i <- i - 1
+    j <- j + 1
+    if (i <= 0) i <- i + n
+    if (j > n) j <- j - n
+    if (result[i, j] > 0) {
+      i <- i + 2
+      j <- j - 1
+      if (i > n) i <- i - n
+      if (j <= 0) j <- j + n
+    }
+    result[i, j] <- k
   }
+  Sum <- (n^2 + 1) / 2 * n
+  # check the row sum and column sum and diagonal sum
+  if(all(colSums(result) == Sum) & all(rowSums(result) == Sum) & sum(diag(result)) == Sum & sum(diag(result[, n:1])) == Sum) {
+    if(echo){
+      cat("Magic square found at the order of", n, "\n")
+      print(result)
+      cat("Row sum and column sum and diagonal sum are all", Sum, "\n")
+    }
+    return(result)
+  }        
 }
 
 magic.9 <- magic_2Mp1(9, echo=T)
@@ -57,36 +54,94 @@ All numbers are written in order from left to right across each row in turn, sta
 
 ```{r}
 magic_4M <- function(n, echo=FALSE){
-  # n must be the integer divisible by 4
-  if (n %% 4 != 0) warning("To use this method, n must be the integer divisible by 4") 
-  else {temp0 <- diag(nrow = 4, ncol = 4) + diag(nrow = 4, ncol = 4)[, 4:1]
-        temp1 <- temp0
-        m <- n/4
-        if (m > 1){
-          for (i in 2:m){temp1 <- cbind(temp1, temp0)}
-          temp0 <- temp1
-          for (i in 2:m){temp1 <- rbind(temp1, temp0)}
-        }
-        temp2 <- matrix(rep(1, n^2), nrow = n, ncol = n) - temp1 
-        result <- matrix(1:n^2, nrow = n, ncol = n, byrow = T) * temp1 + 
-                  matrix(n^2:1, nrow = n, ncol = n, byrow = T) * temp2
-        Sum <- (n^2 + 1) / 2 * n
-        # check the row sum and column sum
-        if(all(colSums(result) == Sum) & all(rowSums(result) == Sum)) {
-          if(echo){
-            cat("Magic square found at the order of", n, "\n")
-            print(result)
-            cat("Row sum and column sum are both", Sum, "\n")
-          }
-          return(result)
-        }        
+  temp0 <- diag(nrow = 4, ncol = 4) + diag(nrow = 4, ncol = 4)[, 4:1]
+  temp1 <- temp0
+  m <- n/4
+  if (m > 1){
+    for (i in 2:m){temp1 <- cbind(temp1, temp0)}
+    temp0 <- temp1
+    for (i in 2:m){temp1 <- rbind(temp1, temp0)}
   }
+  temp2 <- matrix(rep(1, n^2), nrow = n, ncol = n) - temp1 
+  result <- matrix(1:n^2, nrow = n, ncol = n, byrow = T) * temp1 + 
+    matrix(n^2:1, nrow = n, ncol = n, byrow = T) * temp2
+  Sum <- (n^2 + 1) / 2 * n
+  # check the row sum and column sum and diagonal sum
+  if(all(colSums(result) == Sum) & all(rowSums(result) == Sum) & sum(diag(result)) == Sum & sum(diag(result[, n:1])) == Sum) {
+    if(echo){
+      cat("Magic square found at the order of", n, "\n")
+      print(result)
+      cat("Row sum and column sum and diagonal sum are all", Sum, "\n")
+    }
+    return(result)
+  }        
 }
 
 magic.8 <- magic_4M(8, echo=T)
 ```
 
 
-- **$n = 4M + 2$**
+- **singly even order $n = 4M + 2$**
+
+Here I use LUX method. First, give $2M + 1$ order magic square using odd order method `magic_2Mp1(n/2)`. Then divide each cell in this magic square into three groups: row $1$ to row $m$ are all in group "L"; central cell in row $m+1$ is in group "U", the rest in group "L"; central cell in row $m+2$ is in group "L", the rest in group "U"; the remaining rows are all in group "X". Each number in $2M + 1$ order magic square will multiple $4$ and minue $4$, then generate a $2 \times 2$ square in corresponding place using the follwing rule:
+
++---+---+---+---+---+---+---+---+---+---+---+
+| 4 |   | 1 |   | 1 |   | 4 |   | 1 |   | 4 |
++---+---+---+---+---+---+---+---+---+---+---+
+|   | L |   |   |   | U |   |   |   | X |   |
++---+---+---+---+---+---+---+---+---+---+---+
+| 2 |   | 3 |   | 2 |   | 3 |   | 3 |   | 2 |
++---+---+---+---+---+---+---+---+---+---+---+
 
 
+```{r}
+magic_4Mp2 <- function(n, echo=FALSE){
+  m <- n %/% 4
+  temp <- magic_2Mp1(2*m+1) * 4 - 4
+  
+  LUX <- matrix(0, nrow = 2*m+1, ncol = 2*m+1)
+  LUX[1:m, ] <- "L"
+  LUX[(m+1), -(m+1)] <- "L"
+  LUX[(m+1), (m+1)] <- "U"
+  LUX[(m+2), -(m+1)] <- "U"
+  LUX[(m+2), (m+1)] <- "L"
+  if (m >= 2) LUX[(m+3):(2*m+1), ] <- "X"
+  
+  result <- matrix(0, nrow = 4*m+2, ncol = 4*m+2)
+  
+  for (i in 1:(2*m+1)){
+    for (j in 1:(2*m+1)){
+      if (LUX[i,j] == "L") {
+        result[2*i-1, 2*j-1] <- temp[i, j] + 4
+        result[2*i-1, 2*j-1+1] <- temp[i, j] + 1
+        result[2*i-1+1, 2*j-1] <- temp[i, j] + 2
+        result[2*i-1+1, 2*j-1+1] <- temp[i,j] + 3
+      }
+      if (LUX[i,j] == "U") {
+        result[2*i-1, 2*j-1] <- temp[i, j] + 1
+        result[2*i-1, 2*j-1+1] <- temp[i, j] + 4
+        result[2*i-1+1, 2*j-1] <- temp[i, j] + 2
+        result[2*i-1+1, 2*j-1+1] <- temp[i,j] + 3
+      }
+      if (LUX[i,j] == "X") {
+        result[2*i-1, 2*j-1] <- temp[i, j] + 1
+        result[2*i-1, 2*j-1+1] <- temp[i, j] + 4
+        result[2*i-1+1, 2*j-1] <- temp[i, j] + 3
+        result[2*i-1+1, 2*j-1+1] <- temp[i,j] + 2
+      }
+    }
+  }
+  Sum <- (n^2 + 1) / 2 * n
+  # check the row sum and column sum and diagonal sum
+  if(all(colSums(result) == Sum) & all(rowSums(result) == Sum) & sum(diag(result)) == Sum & sum(diag(result[, n:1])) == Sum) {
+      if(echo){
+        cat("Magic square found at the order of", n, "\n")
+        print(result)
+        cat("Row sum and column sum and diagonal sum are all", Sum, "\n")
+      }
+      return(result)
+    }        
+}
+
+magic.10 <- magic_4Mp2(10, echo=T)
+```

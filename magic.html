@@ -61,8 +61,57 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <p>A magic square is an arrangement of distinct integers in a square grid, where the numbers in each row, and in each column, and the numbers in the main and secondary diagonals, all add up to the same number. Normal magic squares of all sizes except <span class="math">\(n=2\)</span> can be constructed.</p>
 <p>Here I will write functions to construct magic squares of all orders using the following three algorithm. Notice that the magic square of some order is not unique. Here these algorithms could give one solution, but not give all possible solutions.</p>
 <ul>
-<li><p><strong>odd order <span class="math">\(n = 2M + 1\)</span></strong></p></li>
-<li><p><strong>doubly even order <span class="math">\(n = 4M\)</span></strong></p></li>
+<li><strong>odd order <span class="math">\(n = 2M + 1\)</span></strong></li>
+</ul>
+<p>The method prescribes starting in the central column of the first row <code>i &lt;- 1; j &lt;- (n + 1) / 2</code> with number 1. After that, the fundamental movement for filling the squares is diagonally right and down <code>i &lt;- i + 1; j &lt;- j + 1</code> (or it can be right-up, left-down, or left-up), one step at a time. If it moves beyond the right boundary, continue from the left side <code>i &lt;- i - n</code>; if it moves beyond the bottom, continue from the top <code>j &lt;- j - n</code>. If a filled square is encountered, one move vertically up one square instead <code>i &lt;- i - 2; j &lt;- j - 1</code>, then continue as before.</p>
+<pre class="r"><code>magic_2Mp1 &lt;- function(n, echo=FALSE){
+  # n must be the odd number
+  if (n %% 2 == 0) warning(&quot;To use this method, n must be the odd number&quot;) 
+  else {result &lt;- matrix(0, nrow = n, ncol = n)       
+        i &lt;- 1
+        j &lt;- (n + 1) / 2
+        result[i,j] &lt;- 1
+        for (k in 2:n^2){
+          i &lt;- i + 1
+          j &lt;- j + 1
+          if (i &gt; n) i &lt;- i - n
+          if (j &gt; n) j &lt;- j - n
+          if (result[i, j] &gt; 0) {
+            i &lt;- i - 2
+            j &lt;- j - 1
+            if (i &lt;= 0) i &lt;- i + n
+            if (j &lt;= 0) j &lt;- j + n
+          }
+          result[i, j] &lt;- k
+        }
+        Sum &lt;- (n^2 + 1) / 2 * n
+        # check the row sum and column sum
+        if(all(colSums(result) == Sum) &amp; all(rowSums(result) == Sum)) {
+          if(echo){
+            cat(&quot;Magic square found at the order of&quot;, n, &quot;\n&quot;)
+            print(result)
+            cat(&quot;Row sum and column sum are both&quot;, Sum, &quot;\n&quot;)
+          }
+          return(result)
+        }        
+  }
+}
+
+magic.9 &lt;- magic_2Mp1(9, echo=T)</code></pre>
+<pre><code>## Magic square found at the order of 9 
+##       [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]
+##  [1,]   47   58   69   80    1   12   23   34   45
+##  [2,]   37   48   59   70   81    2   13   24   35
+##  [3,]   36   38   49   60   71   73    3   14   25
+##  [4,]   26   28   39   50   61   72   74    4   15
+##  [5,]   16   27   29   40   51   62   64   75    5
+##  [6,]    6   17   19   30   41   52   63   65   76
+##  [7,]   77    7   18   20   31   42   53   55   66
+##  [8,]   67   78    8   10   21   32   43   54   56
+##  [9,]   57   68   79    9   11   22   33   44   46
+## Row sum and column sum are both 369</code></pre>
+<ul>
+<li><strong>doubly even order <span class="math">\(n = 4M\)</span></strong></li>
 </ul>
 <p>All numbers are written in order from left to right across each row in turn, starting from the top left corner. Numbers are then either retained in the same place or interchanged with their diametrically opposite numbers in a certain regular pattern. In the situation of order of 4, those numbers on the diagonal and anti-diagonal are retained, while other numbers are interchanged. In the situation of order more than 4 (8, 12, and so on), first divide the grid into several <span class="math">\(4 \times 4\)</span> squares, retain the numbers on those diagonals and anti-diagonals, while other numbers are interchanged. Another way to understand how to interchange numbers with their diametrically opposite numbers is that to select numbers from the square where the numbers are written in reverse order to fill in the blanks which are not on the diagonals and anti-diagonals.</p>
 <pre class="r"><code>magic_4M &lt;- function(n, echo=FALSE){

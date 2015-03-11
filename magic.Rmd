@@ -11,6 +11,46 @@ Here I will write functions to construct magic squares of all orders using the f
 
 - **odd order $n = 2M + 1$**
 
+The method prescribes starting in the central column of the first row `i <- 1; j <- (n + 1) / 2` with number 1. After that, the fundamental movement for filling the squares is diagonally right and down `i <- i + 1; j <- j + 1` (or it can be right-up, left-down, or left-up), one step at a time. If it moves beyond the right boundary, continue from the left side `i <- i - n`; if it moves beyond the bottom, continue from the top `j <- j - n`. If a filled square is encountered, one move vertically up one square instead `i <- i - 2; j <- j - 1`, then continue as before.
+
+```{r}
+magic_2Mp1 <- function(n, echo=FALSE){
+  # n must be the odd number
+  if (n %% 2 == 0) warning("To use this method, n must be the odd number") 
+  else {result <- matrix(0, nrow = n, ncol = n)       
+        i <- 1
+        j <- (n + 1) / 2
+        result[i,j] <- 1
+        for (k in 2:n^2){
+          i <- i + 1
+          j <- j + 1
+          if (i > n) i <- i - n
+          if (j > n) j <- j - n
+          if (result[i, j] > 0) {
+            i <- i - 2
+            j <- j - 1
+            if (i <= 0) i <- i + n
+            if (j <= 0) j <- j + n
+          }
+          result[i, j] <- k
+        }
+        Sum <- (n^2 + 1) / 2 * n
+        # check the row sum and column sum
+        if(all(colSums(result) == Sum) & all(rowSums(result) == Sum)) {
+          if(echo){
+            cat("Magic square found at the order of", n, "\n")
+            print(result)
+            cat("Row sum and column sum are both", Sum, "\n")
+          }
+          return(result)
+        }        
+  }
+}
+
+magic.9 <- magic_2Mp1(9, echo=T)
+
+
+```
 
 
 - **doubly even order $n = 4M$**

@@ -14,5 +14,5 @@ Let's start with some interesting probability problems.
 - [Two Envelopes Problem](http://linzifan.github.io/statistical_article/envelope)
 - To be continued...
 
-Let's also play something fun with recreational mathematics.
+Let's also play something fun with recreational mathematics using `R`.
 - [Magic Squares](http://linzifan.github.io/statistical_article/magic)

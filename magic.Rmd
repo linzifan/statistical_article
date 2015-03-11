@@ -11,7 +11,7 @@ Here I will write functions to construct magic squares of all orders using the f
 
 - **odd order $n = 2M + 1$**
 
-The method prescribes starting in the central column of the first row `i <- 1; j <- (n + 1) / 2` with number 1. After that, the fundamental movement for filling the squares is diagonally right and down `i <- i + 1; j <- j + 1` (or it can be right-up, left-down, or left-up), one step at a time. If it moves beyond the right boundary, continue from the left side `i <- i - n`; if it moves beyond the bottom, continue from the top `j <- j - n`. If a filled square is encountered, one move vertically up one square instead `i <- i - 2; j <- j - 1`, then continue as before.
+The method prescribes starting in the central column of the first row `i <- 1; j <- (n + 1) / 2` with number 1. After that, the fundamental movement for filling the squares is diagonally right and up `i <- i - 1; j <- j + 1`, one step at a time. If it moves beyond the right boundary, continue from the left side `j <- j - n`; if it moves beyond the top, continue from the bottom `i <- i + n`. If a filled square is encountered, one move vertically up one square instead `i <- i + 2; j <- j - 1`, then continue as before.
 
 ```{r}
 magic_2Mp1 <- function(n, echo=FALSE){
@@ -22,14 +22,14 @@ magic_2Mp1 <- function(n, echo=FALSE){
         j <- (n + 1) / 2
         result[i,j] <- 1
         for (k in 2:n^2){
-          i <- i + 1
+          i <- i - 1
           j <- j + 1
-          if (i > n) i <- i - n
+          if (i <= 0) i <- i + n
           if (j > n) j <- j - n
           if (result[i, j] > 0) {
-            i <- i - 2
+            i <- i + 2
             j <- j - 1
-            if (i <= 0) i <- i + n
+            if (i > n) i <- i - n
             if (j <= 0) j <- j + n
           }
           result[i, j] <- k
@@ -48,8 +48,6 @@ magic_2Mp1 <- function(n, echo=FALSE){
 }
 
 magic.9 <- magic_2Mp1(9, echo=T)
-
-
 ```
 
 

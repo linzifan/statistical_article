@@ -12,6 +12,7 @@ Let's start with some interesting probability problems.
 - [Difference Payoff](http://linzifan.github.io/statistical_article/payoff)
 - [100 Prisoners Problem](http://linzifan.github.io/statistical_article/prisoner)
 - [Two Envelopes Problem](http://linzifan.github.io/statistical_article/envelope)
+- [Which Sequence is Fake?](http://linzifan.github.io/statistical_article/sequence)
 - To be continued...
 
 Let's also play something fun with recreational mathematics using `R`.

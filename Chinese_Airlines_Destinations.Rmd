@@ -1,0 +1,73 @@
+---
+title: "Chinese Airlines Destinations"
+author: "Zifan Lin"
+date: "April 9, 2015"
+output: html_document
+---
+
+This idea is inspired by Matt Hartzell. In [his article](http://zhuanlan.zhihu.com/matthartzell/19997041#comment-74074628), he investigated the international connectivity among airports in China and U.S. Here I want to study another important component of civil aviation, airlines. I will compare the variety of Chinese Airlines Destinations, especially those international destinations. Let's start with the top 4 Chinese Airlines: Air China (CA), China Eastern Airlines (MU), China Southern Airlines (CZ), and Hainan Airlines (HU).
+
+The small project is used to train my data analysis techniques in:
+
+- Web spider (extract html element with `Python`)
+- Data Manipulation (with `Python` or `R`)
+- Data Summary and Description (with `R`)
+
+Data are from Wikipedia. Most of them are updated as of January 2015.
+
+#### Step 1
+Create four `csv` file using `Python`. It is fortunate that these four wiki pages share the same format of tables of destinations. I'll record five attributes: City, Country, IATA, ICAO, and airport.
+
+##### Further Improvment
+1. For each airlines, service to some destinations has been terminated (with a different background color on wiki page). Here, I do not distinguish them.
+2. China Southern Airlines includes some cargo-only destinations. Also reference indicators are recorded in airport attribute. I'll get rid of it when merge the data.
+3. When I want to introduce more Chinese Airlines, some of them do not have the same format of tables.
+
+**Python** code:
+```{r test-python, eval=FALSE, engine='python'}
+import requests
+from bs4 import BeautifulSoup
+import csv
+
+
+url_dic = {"CA.csv":"http://en.wikipedia.org/wiki/Air_China_destinations",
+           "MU.csv":"http://en.wikipedia.org/wiki/China_Eastern_Airlines_destinations",
+           "CZ.csv":"http://en.wikipedia.org/wiki/China_Southern_Airlines_destinations",
+           "HU.csv":"http://en.wikipedia.org/wiki/Hainan_Airlines_destinations"}
+
+for item in url_dic.items():
+    # get url
+    url = item[1]
+    page = requests.get(url)
+    soup = BeautifulSoup(page.text)
+    alltables = soup.findAll('table')
+    # Identify the table of destinations
+    # table has the structure: City | Province | Country | IATA | ICAO | Airport
+    for i in range(len(alltables)):
+        try:
+            if alltables[i].findAll('th')[0].get_text() == "City":
+                break
+        except:
+            continue
+    # write csv
+    with open(item[0],'wb') as f:
+        filewriter = csv.writer(f, delimiter = ',')
+        filewriter.writerow(["City", "Country", "IATA", "ICAO", "Airport"])
+        for row in alltables[i].findAll('tr'):
+            try:
+                city = row.findAll('td')[0].get_text().splitlines()[0]
+                country = row.findAll('td')[2].get_text()
+                iata = row.findAll('td')[3].get_text()
+                icao = row.findAll('td')[4].get_text()
+                airport = row.findAll('td')[5].get_text()
+                filewriter.writerow([city, country, iata, icao, airport])
+            except:
+                continue
+    f.close()
+    print item[0] + " has been created."
+
+```
+
+
+#### Step 2
+Merge the data.
